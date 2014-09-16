@@ -834,17 +834,48 @@ int platform_get_snd_device_name_extn(void *platform, snd_device_t snd_device,
 
 void platform_add_backend_name(char *mixer_path, snd_device_t snd_device)
 {
-    if ((snd_device < SND_DEVICE_MIN) || (snd_device >= SND_DEVICE_MAX)) {
-        ALOGE("%s: Invalid snd_device = %d", __func__, snd_device);
-        return;
-    }
+    if (snd_device == SND_DEVICE_IN_BT_SCO_MIC)
+        strlcat(mixer_path, " bt-sco", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_IN_BT_SCO_MIC_WB)
+        strlcat(mixer_path, " bt-sco-wb", MIXER_PATH_MAX_LENGTH);
+    else if(snd_device == SND_DEVICE_OUT_BT_SCO)
+        strlcat(mixer_path, " bt-sco", MIXER_PATH_MAX_LENGTH);
+    else if(snd_device == SND_DEVICE_OUT_BT_SCO_WB)
+        strlcat(mixer_path, " bt-sco-wb", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_HDMI)
+        strlcat(mixer_path, " hdmi", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_AND_HDMI)
+        strcat(mixer_path, " speaker-and-hdmi");
+    else if (snd_device == SND_DEVICE_OUT_AFE_PROXY)
+        strlcat(mixer_path, " afe-proxy", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_USB_HEADSET)
+        strlcat(mixer_path, " usb-headphones", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_AND_USB_HEADSET)
+        strlcat(mixer_path, " speaker-and-usb-headphones",
+                MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_IN_USB_HEADSET_MIC)
+        strlcat(mixer_path, " usb-headset-mic", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_IN_CAPTURE_FM)
+        strlcat(mixer_path, " capture-fm", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_TRANSMISSION_FM)
+        strlcat(mixer_path, " transmission-fm", MIXER_PATH_MAX_LENGTH);
+#ifdef SEPARATE_SPKR_BACKEND
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER)
+        strlcat(mixer_path, " speaker", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_REVERSE)
+        strlcat(mixer_path, " speaker-reverse", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_AND_HEADPHONES)
+        strlcat(mixer_path, " speaker-and-headphones", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_VOICE_SPEAKER)
+        strlcat(mixer_path, " voice-speaker", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_AND_ANC_HEADSET)
+        strlcat(mixer_path, " speaker-and-anc-headphones", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_SPEAKER_PROTECTED)
+        strlcat(mixer_path, " speaker-protected", MIXER_PATH_MAX_LENGTH);
+    else if (snd_device == SND_DEVICE_OUT_VOIP_SPEAKER)
+        strlcat(mixer_path, " voip-speaker-comm", MIXER_PATH_MAX_LENGTH);
+#endif
 
-    const char * suffix = backend_table[snd_device];
-
-    if (suffix != NULL) {
-        strlcat(mixer_path, " ", MIXER_PATH_MAX_LENGTH);
-        strlcat(mixer_path, suffix, MIXER_PATH_MAX_LENGTH);
-    }
 }
 
 int platform_get_pcm_device_id(audio_usecase_t usecase, int device_type)
